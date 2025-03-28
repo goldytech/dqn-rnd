@@ -39,3 +39,17 @@ def fetch_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
     fundamentals = stock.financials.T
     return fundamentals
+
+def fetch_fundamental_data(tickers):
+    """
+    Fetch fundamental data from Yahoo Finance API for multiple tickers.
+    
+    :param tickers: List of stock ticker symbols
+    :return: Dictionary of DataFrames with fundamental data for each ticker
+    """
+    fundamentals = {}
+    for ticker in tickers:
+        stock = yf.Ticker(ticker)
+        fundamentals[ticker] = stock.financials.T
+    return fundamentals
+

@@ -9,10 +9,11 @@ class StockTradingEnv(gym.Env):
     """
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, df):
+    def __init__(self, df, fundamentals):
         super(StockTradingEnv, self).__init__()
         
         self.df = df
+        self.fundamentals = fundamentals
         self.current_step = 0
         self.balance = 10000  # Initial balance
         self.shares_held = 0
@@ -21,7 +22,7 @@ class StockTradingEnv(gym.Env):
         
         # Define action and observation space
         self.action_space = spaces.Discrete(3)  # Buy, Sell, Hold
-        self.observation_space = spaces.Box(low=0, high=1, shape=(6,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=0, high=1, shape=(10,), dtype=np.float32)
 
     def reset(self):
         self.current_step = 0
@@ -38,7 +39,11 @@ class StockTradingEnv(gym.Env):
             self.df.iloc[self.current_step]['EMA'],
             self.df.iloc[self.current_step]['RSI'],
             self.balance,
-            self.shares_held
+            self.shares_held,
+            self.fundamentals.iloc[self.current_step]['Total Revenue'],
+            self.fundamentals.iloc[self.current_step]['Gross Profit'],
+            self.fundamentals.iloc[self.current_step]['Operating Income'],
+            self.fundamentals.iloc[self.current_step]['Net Income']
         ])
         return frame
 

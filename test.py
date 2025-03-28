@@ -2,7 +2,7 @@
 import numpy as np
 from stock_trading_env import StockTradingEnv
 from dqn_agent import DQNAgent
-from data_fetcher import fetch_stock_data, fetch_technical_data
+from data_fetcher import fetch_stock_data, fetch_technical_data, fetch_fundamental_data
 
 if __name__ == "__main__":
     tickers = ["AAPL", "MSFT", "GOOGL"]  # List of tickers
@@ -11,8 +11,9 @@ if __name__ == "__main__":
     
     data = fetch_stock_data(tickers, start_date, end_date)
     technical_data = {ticker: fetch_technical_data(data[ticker]) for ticker in tickers}
+    fundamental_data = fetch_fundamental_data(tickers)
     
-    envs = {ticker: StockTradingEnv(technical_data[ticker]) for ticker in tickers}
+    envs = {ticker: StockTradingEnv(technical_data[ticker], fundamental_data[ticker]) for ticker in tickers}
     state_size = envs[tickers[0]].observation_space.shape[0]
     action_size = envs[tickers[0]].action_space.n
     agent = DQNAgent(state_size, action_size)
@@ -29,3 +30,4 @@ if __name__ == "__main__":
             env.render()
             if done:
                 break
+
